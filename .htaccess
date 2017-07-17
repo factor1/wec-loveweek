@@ -1,0 +1,21 @@
+
+# set environment
+#SetEnv APPLICATION_ENV development
+
+# enable rewrites
+RewriteEngine On
+
+# force www
+# RewriteCond %{HTTP_HOST} !^www.wecloveweek.com/$ [NC]   
+# RewriteRule ^(.*)$ http://www.wecloveweek.com/$1 [L,R=301] 
+
+#zend rewrites
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
+RewriteCond %{REQUEST_URI} !^/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^.*$ - [NC,L]
+RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
+RewriteCond %{REQUEST_URI} !^/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^.*$ index.php [NC,L]

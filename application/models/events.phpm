@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * models/events.phpm
+ * @author Jeff Tribble
+ */
+
+class Events extends Myriad_Table
+{
+    /**
+     * Table Setup
+     */
+
+    protected $_name = 'tbl_events';
+    protected $_dependentTables = array();
+    protected $_referenceMap = array();
+
+
+    /**
+     * Get Select Instance
+     */
+
+    public function getSelectInstance()
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from($this->_name);
+        $objSelect = $this->addSearchToSelect($objSelect);
+        $objSelect = $this->addOrderToSelect($objSelect);
+        $objSelect = $this->addLimitToSelect($objSelect);
+
+        return $objSelect;
+    }
+
+    /**
+     * Events Lookup
+     */
+
+    public static function getUserEvents($arrEventIds)
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_events');
+        $objSelect->where('tbl_events.id IN (?)', $arrEventIds);
+        $objSelect->joinLeft('tbl_participants_lookup', 'tbl_participants_lookup.event_id = tbl_events.id', array('participants'))
+        ;
+        $objSelect->order('tbl_events.id ASC');
+
+        try {
+            return Myriad_Data::getAdapter()->query($objSelect->__toString())->fetchAll(Zend_Db::FETCH_OBJ);
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+}

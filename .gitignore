@@ -1,0 +1,10 @@
+*.DS_Store
+web.config
+*.old
+!.gitkeep
+scripts/
+error_log
+desktop.ini
+.sass-cache/
+application/data/sessions/
+application/data/logs/

@@ -1,0 +1,312 @@
+<?php
+
+/**
+ * models/users.phpm
+ * @author Myriad Interactive, LLC.
+ */
+
+class Users extends Myriad_Table
+{
+    /**
+     * Table Setup
+     */
+
+    protected $_name = 'tbl_users';
+    protected $_dependentTables = array();
+    protected $_referenceMap = array();
+
+
+    /**
+     * Get Select Instance
+     */
+
+    public function getSelectInstance()
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from($this->_name);
+        $objSelect = $this->addSearchToSelect($objSelect);
+        $objSelect = $this->addOrderToSelect($objSelect);
+        $objSelect = $this->addLimitToSelect($objSelect);
+
+        return $objSelect;
+    }
+
+
+    /**
+     * Login
+     */
+
+    public static function login($strUsername, $strPassword)
+    {
+        try {
+            $objAuth = Zend_Auth::getInstance();
+
+            $objAuthAdapter = new Zend_Auth_Adapter_DbTable(
+                Myriad_Data::getAdapter(),
+                'tbl_users',
+                'username',
+                'password',
+                'MD5(CONCAT(?, password_salt)) AND user_is_active = 1'
+                // 'MD5(CONCAT(?, password_salt))'
+            );
+
+            $objAuthAdapter->setIdentity($strUsername);
+            $objAuthAdapter->setCredential($strPassword);
+
+            $objAuthResult = $objAuth->authenticate($objAuthAdapter);
+
+            if ($objAuthResult->isValid()) {
+
+                // get the user object
+
+                $objUser = $objAuthAdapter->getResultRowObject(null, 'password');
+
+                // store user object
+
+                $objStorage = $objAuth->getStorage();
+                $objStorage->write($objUser);
+            }
+
+            return $objAuthResult;
+
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Is Current User
+     */
+
+    public static function isCurrentUser($strUsername = '')
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_users', array('total' => 'count(*)'));
+        $objSelect->where('username = ?', $strUsername);
+
+        try {
+            return Myriad_Data::getAdapter()->fetchOne($objSelect->__toString());
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+
+
+    /**
+     * Get Users for Select
+     */
+
+    public static function getUsersForSelect()
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_users', array('id', 'user_first_name', 'user_last_name'));
+        $objSelect->order('user_first_name ASC');
+
+        try {
+            return Myriad_Data::getAdapter()->query($objSelect->__toString())->fetchAll(Zend_Db::FETCH_OBJ);
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+
+
+    /**
+     * Get Full Name
+     */
+
+    public static function getUserFullName($intId = 0)
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_users', array("CONCAT(user_first_name, ' ', user_last_name)"));
+        $objSelect->where('id = ?', $intId);
+
+        try {
+            return Myriad_Data::getAdapter()->fetchOne($objSelect->__toString());
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+
+
+    /**
+     * Is Registered User
+     */
+
+    public static function isRegisteredUser($strEmail = '')
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_users', array('total' => 'count(*)'));
+        $objSelect->where('username = ?', $strEmail);
+        // $objSelect->where('user_status = 1');
+        $objSelect->limit(1);
+
+        try {
+            return Myriad_Data::getAdapter()->fetchOne($objSelect->__toString());
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+
+
+    /**
+     * Get User Id By Activation Hash
+     */
+
+    public static function getUserIdByActivationHash($strHash = '')
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_users', array('id'));
+        $objSelect->where('MD5(CONCAT(username, password_salt)) = ?', $strHash);
+        $objSelect->where('user_is_active = 0');
+        $objSelect->limit(1);
+
+        try {
+            return Myriad_Data::getAdapter()->fetchOne($objSelect->__toString());
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+
+
+    /**
+     * Is Registered User
+     */
+
+    public static function isCurrentSubscriber($intUserId = 0)
+    {
+        $objUser = Subscriptions::getSubscriptionByUserId($intUserId);
+        return
+            !empty($objUser)
+            && $objUser->user_subscription_expires != null
+            && !$objUser->user_subscription_is_expired;
+    }
+
+
+    /**
+     * Is Email Available
+     */
+
+    public static function isEmailAvailable($strEmail = '', $intId = 0)
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_users', array('total' => 'count(*)'));
+        $objSelect->where('username = ?', $strEmail);
+        if ($intId > 0) {
+            $objSelect->where('id != ?', $intId);
+        }
+        $objSelect->limit(1);
+
+        try {
+            return (intval(Myriad_Data::getAdapter()->fetchOne($objSelect->__toString())) > 0) ? false : true;
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+
+
+    /**
+     * Get Total Users
+     */
+
+    public static function getTotalUsers()
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_users', array('total' => 'COUNT(*)'));
+
+        try {
+            return Myriad_Data::getAdapter()->fetchOne($objSelect->__toString());
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+
+
+    /**
+     * Returns true if the user has uploaded a profile photo
+     * @static
+     * @param int $intUserId
+     * @return bool
+     */
+
+    public static function hasProfilePhoto($intUserId = 0)
+    {
+        return file_exists( PUBLIC_PATH . static::PROFILE_PATH . '/' . $intUserId . '.jpg' );
+    }
+
+
+    /**
+     * @static
+     * @param int $intUserId
+     * @return string
+     */
+
+    public static function getProfilePhoto($intUserId = 0)
+    {
+        if (static::hasProfilePhoto($intUserId)) {
+            return static::PROFILE_PATH . '/' . $intUserId . '.jpg';
+        }
+
+        // return default photo
+        return '';
+    }
+
+
+    public static function getTotalNewUsersPerMonthByYear($intYear = null)
+    {
+        $intYear = (int) $intYear;
+
+        if ($intYear == 0) {
+            $intYear = date('Y');
+        }
+
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_users', array(
+            'month' => 'EXTRACT(MONTH FROM user_created) as month',
+            'total' => 'COUNT(*)',
+        ));
+        if (isset(Zend_Auth::getInstance()->getIdentity()->account_id)) {
+            $objSelect->where('tbl_users.account_id = ?', Zend_Auth::getInstance()->getIdentity()->account_id);
+        }
+        $objSelect->where('user_created LIKE ?', $intYear . '%');
+        $objSelect->group('EXTRACT(MONTH FROM user_created) ASC');
+        $objSelect->order('EXTRACT(MONTH FROM user_created)');
+        $objSelect->limit(12);
+
+        try {
+            return Myriad_Data::getAdapter()->query($objSelect->__toString())->fetchAll(Zend_Db::FETCH_OBJ);
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+
+    public static function getZipCodeStats($intYear = null)
+    {
+        $intYear = (int) $intYear;
+
+        if ($intYear == 0) {
+            $intYear = date('Y');
+        }
+
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_users', array(
+            'total'    => 'COUNT(*)',
+            'user_zip' => 'user_zip'
+        ));
+        if (isset(Zend_Auth::getInstance()->getIdentity()->account_id)) {
+            $objSelect->where('tbl_users.account_id = ?', Zend_Auth::getInstance()->getIdentity()->account_id);
+        }
+        $objSelect->group('user_zip');
+        $objSelect->order('total DESC');
+        $objSelect->order('user_zip ASC');
+        $objSelect->limit(50);
+
+        try {
+            return Myriad_Data::getAdapter()->query($objSelect->__toString())->fetchAll(Zend_Db::FETCH_OBJ);
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+}

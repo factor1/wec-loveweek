@@ -1,0 +1,70 @@
+
+/**
+ * Fonts
+ */
+
+@font-face {
+  font-family: 'titillium-thin';
+  src: url('/loveweek/fonts/titillium-thin-webfont.eot');
+  src: url('/loveweek/fonts/titillium-thin-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/loveweek/fonts/titillium-thin-webfont.woff') format('woff'),
+       url('/loveweek/fonts/titillium-thin-webfont.ttf') format('truetype'),
+       url('/loveweek/fonts/titillium-thin-webfont.svg#titillium-thin') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'titillium-light';
+  src: url('/loveweek/fonts/titillium-light-webfont.eot');
+  src: url('/loveweek/fonts/titillium-light-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/loveweek/fonts/titillium-light-webfont.woff') format('woff'),
+       url('/loveweek/fonts/titillium-light-webfont.ttf') format('truetype'),
+       url('/loveweek/fonts/titillium-light-webfont.svg#titillium-light') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'titillium-regular';
+  src: url('/loveweek/fonts/titillium-regular-webfont.eot');
+  src: url('/loveweek/fonts/titillium-regular-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/loveweek/fonts/titillium-regular-webfont.woff') format('woff'),
+       url('/loveweek/fonts/titillium-regular-webfont.ttf') format('truetype'),
+       url('/loveweek/fonts/titillium-regular-webfont.svg#titillium-regular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'titillium-semibold';
+  src: url('/loveweek/fonts/titillium-semibold-webfont.eot');
+  src: url('/loveweek/fonts/titillium-semibold-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/loveweek/fonts/titillium-semibold-webfont.woff') format('woff'),
+       url('/loveweek/fonts/titillium-semibold-webfont.ttf') format('truetype'),
+       url('/loveweek/fonts/titillium-semibold-webfont.svg#titillium-semibold') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'titillium-bold';
+  src: url('/loveweek/fonts/titillium-bold-webfont.eot');
+  src: url('/loveweek/fonts/titillium-bold-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/loveweek/fonts/titillium-bold-webfont.woff') format('woff'),
+       url('/loveweek/fonts/titillium-bold-webfont.ttf') format('truetype'),
+       url('/loveweek/fonts/titillium-bold-webfont.svg#titillium-bold') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'titillium-black';
+  src: url('/loveweek/fonts/titillium-black-webfont.eot');
+  src: url('/loveweek/fonts/titillium-black-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/loveweek/fonts/titillium-black-webfont.woff') format('woff'),
+       url('/loveweek/fonts/titillium-black-webfont.ttf') format('truetype'),
+       url('/loveweek/fonts/titillium-black-webfont.svg#titillium-black') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

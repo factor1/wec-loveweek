@@ -1,0 +1,8 @@
+Database issues: 
+- People could still join on the main page by clicking the join button even if registration was full. 
+
+- Some people weren’t receiving their confirmation email, that was happening more towards the end so maybe it was going to peoples spam? 
+
+- Having the “I will participate” button on the events that didn’t call for registration like the blood drive, student event and bible drive got confusing bc people assumed they were registered. The blood drive one worked great because the "I will participate" button took them directly to the red cross website. This only worked if they went on the project page and didn't click join from from the main page. My suggestion would be to get rid of the join button on the main page all together if we can't fix the first and 3rd bullet.
+
+- Forgot password emails Don't seem to work.

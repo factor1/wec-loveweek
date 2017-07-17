@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * models/participants.phpm
+ * @author Jeff Tribble
+ */
+
+class Participants extends Myriad_Table
+{
+    /**
+     * Table Setup
+     */
+
+    protected $_name = 'tbl_participants_lookup';
+    protected $_dependentTables = array();
+    protected $_referenceMap = array();
+
+
+    /**
+     * Get Select Instance
+     */
+
+    public function getSelectInstance()
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from($this->_name);
+        $objSelect = $this->addSearchToSelect($objSelect);
+        $objSelect = $this->addOrderToSelect($objSelect);
+        $objSelect = $this->addLimitToSelect($objSelect);
+
+        return $objSelect;
+    }
+
+    /**
+     * Participants Lookup (by User)
+     */
+
+    public static function getUserEvents($intUserId)
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_participants_lookup', array('event_id', 'participants'));
+        $objSelect->where('user_id = ?', $intUserId);
+        $objSelect->joinLeft('tbl_events', 'tbl_events.id = tbl_participants_lookup.event_id', array('event_title', 'event_start_date', 'event_end_date', 'event_city', 'event_age', 'event_spots_available', 'event_spots_total', 'id'));
+        $objSelect->where('tbl_events.id is not null');
+        $objSelect->order('event_id ASC');
+
+        try {
+            return Myriad_Data::getAdapter()->query($objSelect->__toString())->fetchAll(Zend_Db::FETCH_OBJ);
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+
+    /**
+     * Participants Lookup (by Event)
+     */
+
+    public static function getEventUsers($intEventId)
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_participants_lookup', array('user_id', 'participants'));
+        $objSelect->where('event_id = ?', $intEventId);
+        $objSelect->joinLeft('tbl_users', 'tbl_users.id = tbl_participants_lookup.user_id', array('username', 'user_first_name', 'user_last_name', 'id'));
+        $objSelect->where('tbl_users.id is not null');
+        $objSelect->order('user_id ASC');
+
+        try {
+            return Myriad_Data::getAdapter()->query($objSelect->__toString())->fetchAll(Zend_Db::FETCH_OBJ);
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+
+    /**
+     * User is Registered
+     */
+
+    public static function userIsRegistered($intEventId, $intUserId)
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_participants_lookup');
+        $objSelect->where('event_id = ?', $intEventId);
+        $objSelect->where('user_id = ?', $intUserId);
+        $objSelect->limit(1);
+
+        try {
+            return Myriad_Data::getAdapter()->query($objSelect->__toString())->fetchAll(Zend_Db::FETCH_OBJ);
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+}
