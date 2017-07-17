@@ -2,7 +2,7 @@
 web.config
 *.old
 !.gitkeep
-scripts/
+./scripts/
 error_log
 desktop.ini
 .sass-cache/

@@ -1,0 +1,213 @@
+<style type="text/css">
+
+div.dual {
+  margin-top: 40px;
+  padding-bottom: 10px;
+}
+
+div.dual h1,
+div.dual h3 {
+  line-height: 40px;
+  margin: 0;
+}
+
+div.dual h1 {
+  float: left;
+}
+
+div.dual h3 {
+  float: right;
+}
+
+div.dual h3 a {
+  border: 0;
+  display: block;
+  padding-right: 24px;
+  position: relative;
+}
+
+div.dual h3 a:after {
+  border-top: 8px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 6px solid transparent;
+  content: '';
+  display: block;
+  height: 0;
+  position: absolute;
+  right: 0;
+  width: 0;
+}
+
+div.dual h3 a.active:after {
+  border-bottom-color: #231f20;
+  top: 10px;
+}
+
+div.dual h3 a.active:hover:after {
+  border-bottom-color: #05a6d4;
+}
+
+div.dual h3 a.inactive:after {
+  border-top-color: #231f20;
+  top: 19px;
+}
+
+div.dual h3 a.inactive:hover:after {
+  border-top-color: #05a6d4;
+}
+
+#search-form {
+  clear: both;
+}
+
+#search-form {
+  background: #b9d233;
+  background: rgba(0, 0, 0, 0.04);
+  margin: 0;
+  padding: 30px;
+}
+
+#search-form legend {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+</style>
+
+
+<?php if (!$this->boolIsUser): ?>
+
+<div class="row actions">
+
+  <div class="col-sm-6">
+    <a href="/login/new" class="btn btn-custom">Step 1: Register</a>
+    <a href="/login" class="sub">Already registered? Login Here</a>
+  </div>
+
+  <div class="col-sm-6">
+    <a href="#scroll-events" class="btn btn-custom">Step 2: Join an Event</a>
+  </div>
+
+</div>
+
+<?php endif; ?>
+
+
+<div class="dual cf">
+  <h1 id="scroll-events">All Events</h1>
+  <h3><a href="#" id="toggle-filter" class="<?php echo (!$this->boolFilter) ? 'inactive' : 'active'; ?>">Search &amp; Filter Events</a></h3>
+</div>
+
+<form id="search-form" method="get" class="filter">
+
+  <div class="row">
+
+    <fieldset class="col-sm-3">
+      <legend>City</legend>
+      <ul>
+    <?php foreach ($this->arrCities as $key => $value): ?>
+        <li><label><input type="checkbox" name="event_city[]" value="<?php echo $key; ?>" <?php echo (in_array($key, $this->arrData['event_city'])) ? 'checked' : ''; ?> /> <?php echo $value; ?></label></li>
+    <?php endforeach; ?>
+      </ul>
+    </fieldset>
+
+    <fieldset class="col-sm-3">
+      <legend>Category</legend>
+      <ul>
+    <?php foreach ($this->arrCats as $key => $value): ?>
+        <li><label><input type="checkbox" name="event_category[]" value="<?php echo $key; ?>" <?php echo (in_array($key, $this->arrData['event_category'])) ? 'checked' : ''; ?>  /> <?php echo $value; ?></label></li>
+    <?php endforeach; ?>
+      </ul>
+    </fieldset>
+
+    <fieldset class="col-sm-3">
+      <legend>Age Group</legend>
+      <ul>
+    <?php foreach ($this->arrAges as $key => $value): ?>
+        <li><label><input type="checkbox" name="event_age[]" value="<?php echo $key; ?>" <?php echo (in_array($key, $this->arrData['event_age'])) ? 'checked' : ''; ?>  /> <?php echo $value; ?></label></li>
+    <?php endforeach; ?>
+      </ul>
+    </fieldset>
+
+    <fieldset class="col-sm-3">
+      <legend>More</legend>
+      <ul>
+        <li><input type="text" name="event_start_date" value="<?php echo $this->arrData['event_start_date']; ?>" class="date" placeholder="Search by date" /></li>
+        <li><input type="text" name="keywords" value="<?php echo $this->arrData['keywords']; ?>" placeholder="Search by keyword" /></li>
+        <li><input type="submit" value="Search" class="btn btn-primary" /></li>
+      </ul>
+    </fieldset>
+
+  </div>
+
+</form>
+
+<?php if (!$this->boolEmpty): ?>
+
+<div class="table-responsive">
+
+  <table class="table table-striped table-sort">
+
+    <thead>
+      <tr>
+  <?php foreach($this->arrFields as $strField): ?>
+        <th <?php echo ($strField == 'Start date') ? 'class="tablesorter-headerAsc"' : ''; ?>><?php echo $strField; ?></th>
+  <?php endforeach; ?>
+      </tr>
+    </thead>
+
+    <tbody>
+  <?php foreach ($this->objPaginator as $arrRow): ?>
+  <?php $objEvent = (object) $arrRow; ?>
+      <tr>
+        <td class="title"><a href="/events/view/id/<?php echo $objEvent->id; ?>"><?php echo $objEvent->event_title; ?></a></td>
+        <td><?php echo $objEvent->event_organization; ?></td>
+        <td><?php echo date('m/d/y', strtotime($objEvent->event_start_date)); ?></td>
+        <td><?php echo date('h:iA', strtotime($objEvent->event_start_time)); ?></td>
+        <td><?php echo $objEvent->event_spots_available."/".$objEvent->event_spots_total; ?></td>
+        <td>
+            <?php if($objEvent->event_spots_available) { ?>
+            <a href="/events/register/id/<?php echo $objEvent->id; ?>">Join</a>
+            <?php } else { ?>
+            <span class="event-<?php echo $objEvent->id; ?>">Full</span>
+            <?php } ?>
+        </td>
+      </tr>
+  <?php endforeach; ?>
+    </tbody>
+
+  </table>
+
+</div>
+
+<?php echo $this->paginationControl($this->objPaginator); ?>
+
+<?php else: ?>
+
+<p style="margin-top: 30px">Your search returned no results. Try broadening your search criteria.</p>
+
+<?php endif; ?>
+
+
+<?php $this->headScript()->captureStart() ?>
+
+jQuery(document).ready(function($) {
+
+<?php if (!$this->boolFilter): ?>
+  $('#search-form').hide();
+<?php endif; ?>
+
+  $('a#toggle-filter').click(function(e) {
+    e.preventDefault();
+    if ($(this).hasClass('inactive')) {
+      $('#search-form').slideDown(400);
+      $(this).removeClass('inactive').addClass('active');
+    } else if ($(this).hasClass('active')) {
+      $('#search-form').slideUp(400);
+      $(this).removeClass('active').addClass('inactive');
+    }
+  });
+  
+});
+
+<?php $this->headScript()->captureEnd() ?>

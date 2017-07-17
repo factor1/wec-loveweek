@@ -1,0 +1,18 @@
+
+<hgroup>
+
+  <h1>Application Error</h1>
+
+  <h2>Looks Like You Found a Bug</h2>
+
+</hgroup>
+
+<p>This error has been logged and our team has been notified.<br />
+We apologize for any inconvenience this may have caused.</p>
+
+<?php if ($this->strError): ?>
+<p><strong>Error Details</strong><br />
+<?php echo $this->escape($this->strError); ?></p>
+<?php endif; ?>
+
+<a href="/">Return to Home Page</a>

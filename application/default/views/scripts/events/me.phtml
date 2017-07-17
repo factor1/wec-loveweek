@@ -1,0 +1,71 @@
+
+<h1 style="margin-bottom: 10px">My Events</h1>
+
+<p style="margin-bottom: 18px">This page displays all of the Love Week events that you've registered for.</p>
+
+<?php if (!empty($this->objEvents)): ?>
+
+<div class="table-responsive">
+
+  <table class="table table-striped table-sort">
+
+    <thead>
+      <tr>
+  <?php foreach($this->arrFields as $strField): ?>
+        <th <?php echo ($strField == 'Start date') ? 'class="tablesorter-headerAsc"' : ''; ?>><?php echo $strField; ?></th>
+  <?php endforeach; ?>
+        <th><!-- [x] Unregister --></th>
+      </tr>
+    </thead>
+
+    <tbody>
+  <?php foreach ($this->objEvents as $objEvent): ?>
+      <tr>
+        <td><a href="/events/view/id/<?php echo $objEvent->id; ?>"><?php echo $objEvent->event_title; ?></a></td>
+        <td><?php echo date('m/d', strtotime($objEvent->event_start_date)); ?></td>
+        <td><?php echo date('m/d', strtotime($objEvent->event_end_date)); ?></td>
+        <td><?php echo ($objEvent->event_city && isset($this->arrCities[$objEvent->event_city])) ? $this->arrCities[$objEvent->event_city] : ''; ?></td>
+        <td><?php echo $objEvent->event_age; ?></td>
+        <td><?php echo $objEvent->event_spots_available . '/' . $objEvent->event_spots_total; ?></td>
+        <td class="input"><input type="number" name="participants" value="<?php echo $objEvent->participants; ?>" placeholder="How many people in your party?" class="participants" data-id="<?php echo $objEvent->id; ?>" /></td>
+        <td class="actions">
+          <a href="#" class="update-record" data-id="<?php echo $objEvent->id; ?>">Update</a>
+          <a href="#" class="unregister-record" data-id="<?php echo $objEvent->id; ?>">[x]</a>
+        </td>
+      </tr>
+  <?php endforeach; ?>
+    </tbody>
+
+  </table>
+
+</div>
+
+<?php else: ?>
+
+<p>You aren't currently registered for any events.</p>
+
+<?php endif; ?>
+
+
+<?php $this->headScript()->captureStart() ?>
+
+jQuery(document).ready(function($) {
+  
+  $('a.update-record').click(function(e) {
+    e.preventDefault();
+    intId = $(this).data('id');
+    intParticipants = $('input.participants[data-id="' + intId + '"]').val();
+    strSrc = '/events/change?event_id=' + intId + '&user_id=<?php echo ($this->objAuth->hasIdentity()) ? $this->objAuth->getIdentity()->id : ""; ?>&participants=' + intParticipants;
+    window.location.href = strSrc;
+  });
+  
+  $('a.unregister-record').click(function(e) {
+    e.preventDefault();
+    intId = $(this).data('id');
+    strSrc = '/events/unregister?event_id=' + intId + '&user_id=<?php echo ($this->objAuth->hasIdentity()) ? $this->objAuth->getIdentity()->id : ""; ?>';
+    window.location.href = strSrc;
+  });
+
+});
+
+<?php $this->headScript()->captureEnd() ?>

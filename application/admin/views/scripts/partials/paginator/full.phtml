@@ -1,0 +1,51 @@
+
+<?php
+
+/**
+ * Boostrap 3 Pagination
+ */
+
+if ($this->pageCount) {
+
+    $strQueryString = ($_SERVER['QUERY_STRING'] != '') ? $this->escape('?' . $_SERVER['QUERY_STRING']) : '';
+
+    echo '<ul class="pagination">';
+
+    /**
+     * First Page
+     */
+
+    if (isset($this->previous)) {
+        echo '<li><a href="' . str_replace('//', '/', $this->url(array('page' => $this->first))) . $strQueryString . '">&laquo;</a></li>';
+    } else {
+        echo '<li class="disabled"><a>&laquo;</a></li>';
+    }
+
+    /**
+     * Numbered Pages
+     */
+
+    foreach ($this->pagesInRange as $page) {
+
+        if ($page != $this->current) {
+            echo '<li><a href="' . str_replace('//', '/', $this->url(array('page' => $page))) . $strQueryString . '">' . $page . '</a></li>';
+        } else {
+            echo '<li class="active"><a href="' . str_replace('//', '/', $this->url(array('page' => $page))) . $strQueryString . '">' . $page . '</a></li>';
+        }
+    }
+
+    /**
+     * Last Page
+     */
+
+    if (isset($this->next)) {
+        echo '<li><a href="' . str_replace('//', '/', $this->url(array('page' => $this->last))) . $strQueryString . '">&raquo;</a></li>';
+    } else {
+        echo '<li class="disabled"><a>&raquo;</a></li>';
+    }    
+
+    echo '</ul>';
+  
+}
+
+?>

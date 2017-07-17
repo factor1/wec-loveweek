@@ -1,0 +1,41 @@
+
+<h1><?php echo $this->strPrimary; ?></h1>
+
+<?php if (!$this->boolSent): ?>
+
+<p>Fill out the form below if you have any questions, comments, or concerns regarding Love Week.</p>
+
+<form method="post">
+
+  <div class="row">
+
+    <?php // for spam protection ?>
+    <input type="text" name="email" value="" style="display: none" />
+
+    <fieldset class="col-sm-6">
+      <legend>Contact Info</legend>
+      <ul>
+        <li><input type="text" name="first_name" value="<?php echo $this->escape($this->arrData['first_name']); ?>" placeholder="First name*" required /></li>
+        <li><input type="text" name="last_name" value="<?php echo $this->escape($this->arrData['first_name']); ?>" placeholder="Last name*" required /></li>
+        <li><input type="text" name="phone_number" value="<?php echo $this->escape($this->arrData['phone_number']); ?>" placeholder="Phone number" /></li>
+        <li><input type="email" name="email_address" value="<?php echo $this->escape($this->arrData['email_address']); ?>" placeholder="Email address*" required /></li>
+      </ul>
+    </fieldset>
+
+    <fieldset class="col-sm-6">
+      <legend>Message</legend>
+      <ul>
+        <li><textarea name="message" style="height: 154px" placeholder="What did you want to tell us?" required><?php echo $this->escape($this->arrData['message']); ?></textarea></li>
+        <li><input type="submit" value="Send Message" class="btn btn-primary" /></li>
+      </ul>
+    </fieldset>
+
+  </div>
+
+</form>
+
+<?php else: ?>
+
+<p>Your message has been sent! Expect a reply shortly.</p>
+
+<?php endif; ?>

@@ -1,0 +1,143 @@
+
+<div class="banner">
+  <div class="container">
+    <h1 class="col-md-7"><?php echo $this->objEvent->event_title; ?></h1>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="info row wide">
+
+    <div class="col-sm-7">
+
+      <?php echo ($this->objEvent->event_notes) ? nl2br($this->objEvent->event_notes) : ''; ?>
+
+  <?php if (!ctype_space($this->objEvent->event_caution) && $this->objEvent->event_caution != ''): ?>
+
+      <span class="caution">
+        <strong>Important Note:</strong>
+        <span class="desc"><?php echo $this->objEvent->event_caution; ?></span>
+      </span>
+
+  <?php endif; ?>
+
+    </div>
+
+    <div class="col-sm-5">
+
+      <dl class="info">
+        <div class="row">
+          <dt class="col-sm-4">Category:</dt>
+          <dd class="col-sm-8"><?php echo ($this->objEvent->event_category && isset($this->arrCats[$this->objEvent->event_category])) ? $this->arrCats[$this->objEvent->event_category] : ''; ?></dd>
+        </div>
+
+<?php if (!empty($this->objEvent->event_organization)): ?>
+        <div class="row">
+          <dt class="col-sm-4">Organization:</dt>
+          <dd class="col-sm-8"><?php echo $this->objEvent->event_organization; ?></dd>
+        </div>
+<?php endif; ?>
+
+        <div class="row">
+          <dt class="col-sm-4">Available Spots:</dt>
+          <dd class="col-sm-8"><?php echo $this->objEvent->event_spots_available." of ".$this->objEvent->event_spots_total." Total"; ?></dd>
+        </div>
+
+        <div class="row">
+          <dt class="col-sm-4">Age Group:</dt>
+          <dd class="col-sm-8"><?php echo $this->arrAges[$this->objEvent->event_age]; ?></dd>
+        </div>
+
+        <div class="row">
+          <dt class="col-sm-4">Date:</dt>
+          <dd class="col-sm-8">
+            <?php echo date('F jS', strtotime($this->objEvent->event_start_date)); ?>
+    <?php if ($this->objEvent->event_start_date != $this->objEvent->event_end_date): ?>
+            <?php echo '- ' . date('jS', strtotime($this->objEvent->event_end_date)); ?>
+    <?php endif; ?>
+          </dd>
+        </div>
+
+        <div class="row">
+          <dt class="col-sm-4">Start Time:</dt>
+          <dd class="col-sm-8"><?php echo date('g:iA', strtotime($this->objEvent->event_start_time)); ?></dd>
+        </div>
+
+        <div class="row">
+          <dt class="col-sm-4">End Time:</dt>
+          <dd class="col-sm-8"><?php echo date('g:iA', strtotime($this->objEvent->event_end_time)); ?></dd>
+        </div>
+
+        <div class="row">
+          <dt class="col-sm-4">Location:</dt>
+          <dd class="col-sm-8">
+            <?php /* echo ($this->objEvent->event_address) ? $this->objEvent->event_address . ',' : ''; */ ?>
+            <?php echo ($this->objEvent->event_city && $this->arrCities[$this->objEvent->event_city]) ? $this->arrCities[$this->objEvent->event_city]. ', VA' : ''; ?>
+            <?php /* echo ($this->objEvent->event_zip) ? $this->objEvent->event_zip : ''; */ ?>
+          </dd>
+        </div>
+      </dl>
+
+      <h3>Invite some friends!</h3>
+
+      <!-- AddThis Button BEGIN -->
+      <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+        <a class="addthis_button_preferred_1"></a>
+        <a class="addthis_button_preferred_2"></a>
+        <a class="addthis_button_preferred_3"></a>
+        <a class="addthis_button_preferred_4"></a>
+        <a class="addthis_button_compact"></a>
+        <a class="addthis_counter addthis_bubble_style"></a>
+      </div>
+      <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
+      <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52ed57365b4ef019"></script>
+      <!-- AddThis Button END -->
+
+    </div>
+
+  </div>
+
+
+  <div class="action row">
+
+    <div class="col-sm-8 col-sm-offset-2">
+
+      <?php if ($this->boolIsUser): ?>
+      <?php $objRecord = Participants::userIsRegistered($this->objEvent->id, $this->objAuth->getIdentity()->id); ?>
+
+        <?php if (empty($objRecord)): ?>
+
+          <?php if ($this->objEvent->event_spots_available > 0): ?>
+          
+            <?php if($this->objEvent->event_register_link) { ?>
+                <a href="<?php echo $this->objEvent->event_register_link; ?>" class="btn btn-custom">Register for Event</a>    
+            <?php } else { ?>
+                <?php if(!$this->objEvent->event_no_register) { ?>
+                    <a href="/events/register/id/<?php echo $this->objEvent->id; ?>" class="btn btn-custom">Register for Event</a>   
+                <?php } else { /* ?>
+                    <a href="/loveweek/events/register/id/<?php echo $this->objEvent->id; ?>" class="btn btn-custom">I'll Participate!</a>
+                <?php */ } ?>
+            <?php } ?>
+
+          <?php else: ?>
+
+          <p>Registration is closed for this event (no more available spots).</p>
+
+          <?php endif; ?>
+
+        <?php else: ?>
+          <p>You are currently registered for this event. <a href="/events/me">Change the number of participants in your party</a></p>
+        <?php endif; ?>
+
+      <?php else: ?>
+
+          <p><a href="/login/new">Join to Register</a> or <a href="/login">Sign In</a></p>      
+
+      <?php endif; ?>
+
+    </div>
+
+  </div>
+
+</div>

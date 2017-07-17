@@ -1,0 +1,52 @@
+
+<h1>Events</h1>
+
+<p>This page displays all of the registered events of Love Week. <a href="/admin/events/manage">+ Add a new event</a></p>
+
+<?php echo $this->paginationControl($this->objPaginator, 'sliding', 'partials/paginator/displaying.phtml'); ?>
+
+<form method="get">
+
+  <fieldset>
+
+    <div class="row search">
+      <div class="col-sm-6 field"><input type="text" name="keywords" value="<?php echo $this->escape($this->strKeywords); ?>" /></div>
+      <div class="col-sm-6 button"><input type="submit" value="Search" class="btn btn-primary" /></div>
+    </div>
+
+    <div class="table-responsive">
+
+      <table class="table table-striped table-sort">
+
+        <thead>
+          <tr>
+            <th><!-- Edit | Del --></th>
+      <?php foreach($this->arrFields as $strField): ?>
+            <th <?php echo ($strField == 'Start date') ? 'class="tablesorter-headerAsc"' : ''; ?>><?php echo $strField; ?></th>
+      <?php endforeach; ?>
+          </tr>
+        </thead>
+
+        <tbody>
+      <?php foreach ($this->objPaginator as $arrRow): ?>
+      <?php $objEvent = (object) $arrRow; ?>
+          <tr>
+            <td><a href="/admin/events/manage/id/<?php echo $objEvent->id; ?>">Edit</a> | <a href="/admin/events/delete/id/<?php echo $objEvent->id; ?>">Del</a></td>
+            <td class="title"><a href="/admin/events/manage/id/<?php echo $objEvent->id; ?>"><?php echo $objEvent->event_title; ?></a></td>
+            <td><?php echo $objEvent->event_organization; ?></td>
+            <td><?php echo date('m/d/y', strtotime($objEvent->event_start_date)); ?></td>
+            <td><?php echo date('h:ia', strtotime($objEvent->event_start_time)); ?></td>
+            <td><?php echo $objEvent->event_spots_available; ?></td>
+          </tr>
+      <?php endforeach; ?>
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <?php echo $this->paginationControl($this->objPaginator); ?>
+
+  </fieldset>
+
+</form>

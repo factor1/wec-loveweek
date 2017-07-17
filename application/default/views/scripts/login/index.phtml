@@ -1,0 +1,24 @@
+
+<h1>Welcome</h1>
+
+<p>Login with your username and password below, or <a href="/login/new">sign up</a>. <a href="/login/assistance">Forgot password?</a></p> <p><em>This database is not connected to your regular WEC login.</em></p>
+
+<form method="post" class="generic">
+
+  <div class="row">
+
+    <fieldset class="col-sm-6">
+
+      <ul>
+        <li><input type="email" name="username" value="<?php echo $this->escape($this->strUsername); ?>" placeholder="Email address" required /></li>
+        <li><input type="password" name="password" placeholder="Password" required /></li>
+        <li><input type="submit" value="Sign In" class="btn btn-primary" /></li>
+      </ul>
+
+    </fieldset>
+    
+    
+
+  </div>
+
+</form>
