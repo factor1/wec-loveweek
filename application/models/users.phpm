@@ -47,7 +47,7 @@ class Users extends Myriad_Table
                 'username',
                 'password',
                 'MD5(CONCAT(?, password_salt)) AND user_is_active = 1'
-                // 'MD5(CONCAT(?, password_salt))'
+            // 'MD5(CONCAT(?, password_salt))'
             );
 
             $objAuthAdapter->setIdentity($strUsername);
@@ -141,6 +141,25 @@ class Users extends Myriad_Table
         $objSelect->from('tbl_users', array('total' => 'count(*)'));
         $objSelect->where('username = ?', $strEmail);
         // $objSelect->where('user_status = 1');
+        $objSelect->limit(1);
+
+        try {
+            return Myriad_Data::getAdapter()->fetchOne($objSelect->__toString());
+        } catch (Myriad_Exception $e) {
+            Myriad_Log::getInstance()->writeLog($e->getMessage(), Zend_Log::ERR);
+        }
+    }
+
+    /**
+     * Is Active User
+     */
+
+    public static function isActiveUser($strEmail = '')
+    {
+        $objSelect = Myriad_Data::getAdapter()->select();
+        $objSelect->from('tbl_users', array('total' => 'count(*)'));
+        $objSelect->where('username = ?', $strEmail);
+        $objSelect->where('user_is_active = 1');
         $objSelect->limit(1);
 
         try {
