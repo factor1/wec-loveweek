@@ -283,8 +283,8 @@ class EventsController extends ControllerAbstract
                         // Send Mail
                         $config = $this->config->resources->mail->eventRegister;
                         $objMail = new Zend_Mail();
-                        $objMail->setBodyText($strBodyText);
-                        $objMail->setBodyHtml($strBodyHTML);
+                        $objMail->setBodyText(utf8_decode($strBodyText));
+                        $objMail->setBodyHtml(utf8_decode($strBodyHTML));
                         $objMail->addTo($config->From->email,$config->From->name);
                         $objMail->addTo($objUser->username);
                         $objMail->setSubject('Thank you for registering for ' . $objEvent->event_title);
