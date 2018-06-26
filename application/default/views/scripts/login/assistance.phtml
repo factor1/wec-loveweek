@@ -1,0 +1,19 @@
+
+<h1>Forgot Password</h1>
+
+<p>Enter your email address below to receive instructions on how to reset your password. <a href="/login">Return to login.</a></p>
+
+<form method="post" class="row">
+
+  <fieldset class="col-sm-6">
+
+    <ul>
+      <li><input type="email" name="email" value="<?php echo $this->escape($this->strEmail); ?>" placeholder="Email address" required /></li>
+      <li><input type="submit" value="Send Instructions" class="btn btn-primary" /></li>
+    </ul>
+
+  </fieldset>
+
+</form>
+
+<p><em>NOTE: If you don't receive an email from us within a few minutes please be sure to check your email client's junk or spam folder. The email will be coming from no-reply@<?php echo Myriad_Utils::getDomain(); ?>.</em></p>

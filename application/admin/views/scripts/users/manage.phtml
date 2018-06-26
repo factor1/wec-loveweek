@@ -1,0 +1,117 @@
+
+<?php if (!$this->boolIsAdmin): ?>
+
+<h1>My Account</h1>
+
+<p>To edit your account information, make changes to the form below and submit.</p>
+
+<?php else: ?>
+
+<h1><a href="/admin/users">Users</a> - <?php echo ($this->intId != 0) ? $this->objUser->user_first_name . ' ' . $this->objUser->user_last_name : 'New'; ?></h1>
+
+<p>To <?php echo ($this->intId != 0) ? 'update this' : 'create a new'; ?> user, make changes to the form below and submit.</p>
+
+<?php endif; ?>
+
+<form id="manage-user" method="post" class="manage">
+
+  <input type="hidden" name="id" value="<?php echo $this->intId; ?>" />
+  <input type="hidden" name="referer" value="<?php echo $this->escape($this->strReferer); ?>" />
+  <input type="hidden" name="old_username" value="<?php echo isset($this->objUser->old_username) ? $this->escape($this->objUser->old_username) : $this->escape($this->objUser->username); ?>" />
+
+  <div class="row">
+
+    <fieldset class="col-sm-6">
+      <ul>
+        <li><input type="text" name="user_first_name" value="<?php echo $this->objUser->user_first_name; ?>" placeholder="First name" required /></li>
+        <li><input type="text" name="user_last_name" value="<?php echo $this->objUser->user_last_name; ?>" placeholder="Last name" required /></li>
+        <li><input type="email" name="username" value="<?php echo $this->objUser->username; ?>" placeholder="Email address (used to log in)" required /></li>
+        <li><input type="text" name="user_phone" value="<?php echo $this->objUser->user_phone; ?>" placeholder="Phone number" /></li>
+        <li><input type="number" name="user_age" value="<?php echo $this->objUser->user_age; ?>" placeholder="Age" /></li>
+  <?php if ($this->intId != 0): ?>
+        <li><a href="#" id="change-password">Change password?</a></li>
+        <li class="password"><input id="p1" type="password" name="password" value="" placeholder="New password (leave blank to keep current password)" /></li>
+        <li class="password"><input id="p2" type="password" name="password_conf" value="" placeholder="Confirm new password" class="unmatch" /></li>
+  <?php else: ?>
+        <li><input id="p1" type="password" name="password" value="" placeholder="Password" /></li>
+        <li><input id="p2" type="password" name="password_conf" value="" placeholder="Confirm password" class="unmatch" /></li>
+  <?php endif; ?>
+      </ul>
+    </fieldset>
+
+    <fieldset class="col-sm-6 mobile-spacing">
+      <ul>
+        <li><input type="text" name="user_address" value="<?php echo $this->objUser->user_address; ?>" placeholder="Address" /></li>
+        <li><input type="text" name="user_city" value="<?php echo $this->objUser->user_city; ?>" placeholder="City" /></li>
+        <li>
+          <select name="user_state">
+            <option value="">-- State --</option>
+        <?php foreach($this->arrStates as $key => $value): ?>
+            <option value="<?php echo $key; ?>" <?php echo ($this->objUser->user_state == $key) ? 'selected' : ''; ?>><?php echo $value; ?></option>
+        <?php endforeach; ?>
+          </select>
+        </li>
+        <li><input type="text" name="user_zip" value="<?php echo $this->objUser->user_zip; ?>" placeholder="Zip code" /></li>
+  <?php if ($this->boolIsAdmin): ?>
+        <li>
+          <label><input type="checkbox" name="user_is_admin" value="1" <?php echo ($this->objUser->user_is_admin == 1) ? 'checked' : ''; ?> /> User is Admin</label>
+          <label><input type="checkbox" name="user_is_active" value="1" <?php echo ($this->objUser->user_is_active == 1) ? 'checked' : ''; ?> /> User is Active</label>
+        </li>
+        <li><input type="submit" value="<?php echo ($this->intId != 0) ? 'Update' : 'Create'; ?> User" class="btn btn-primary" /></li>
+  <?php else: ?>
+        <li><input type="submit" value="Update Profile" class="btn btn-primary" /></li>
+  <?php endif; ?>
+      </ul>
+    </fieldset>
+
+  </div>
+
+</form>
+
+
+<?php $this->headScript()->captureStart() ?>
+
+jQuery(document).ready(function($) {
+
+  $('li.password').hide();
+
+  $('#change-password').click(function(e) {
+    e.preventDefault();
+    $(this).parent().hide();
+    $('li.password').fadeIn(500);
+  });
+
+  /**
+   * Prevent Submit if New Passwords not equal
+   */
+
+  $('form#manage-user').submit(function(e) {
+
+    strP1 = $('input#p1').val();
+    strP2 = $('input#p2').val();
+
+    if (strP1 != strP2) {
+      alert('Your new passwords do not match.');
+      $('input#p1').focus();
+      $('input#p2').val('');
+      e.preventDefault();
+    }
+  });
+
+  /**
+   * Smart Match
+   */
+
+  $('input#p2').keyup(function(e) {
+    strP1 = $('input#p1').val();
+    strP2 = $(this).val();
+    if (strP1 == strP2) {
+      $(this).attr('class', 'match');
+    } else {
+      $(this).attr('class', 'unmatch');      
+    }
+  });
+  
+});
+
+<?php $this->headScript()->captureEnd() ?>

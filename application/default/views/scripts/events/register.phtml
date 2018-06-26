@@ -1,0 +1,58 @@
+<style type="text/css">
+
+div.search {
+  margin-top: 30px;
+  margin-bottom: 14px;
+}
+
+</style>
+
+
+<h1><a href="/events/view/id/<?php echo $this->objEvent->id; ?>"><?php echo $this->objEvent->event_title; ?></a> - Register</h1>
+
+<?php /*
+
+<p>Fill out the form below to register for this event.</p>
+
+<dl>
+  <dt>Spots (Available/Total)</dt>
+  <dd><?php echo $this->objEvent->event_spots_available . '/' . $this->objEvent->event_spots_total; ?></dd>
+
+  <dt>Date &amp; Time</dt>
+  <dd>
+<?php if ($this->objEvent->event_start_date != $this->objEvent->event_end_date): ?>
+    <?php echo date('F jS', strtotime($this->objEvent->event_start_date)) . ' - ' . date('jS', strtotime($this->objEvent->event_end_date)); ?> @ <?php echo date('g:ia', strtotime($this->objEvent->event_start_time)) . ' - ' . date('g:ia', strtotime($this->objEvent->event_end_time)); ?>
+<?php else: ?>
+    <?php echo date('F jS', strtotime($this->objEvent->event_start_date)); ?> @ <?php echo date('g:ia', strtotime($this->objEvent->event_start_time)) . ' - ' . date('g:ia', strtotime($this->objEvent->event_end_time)); ?>
+<?php endif; ?>
+  </dd>
+
+  <dt>Location</dt>
+  <dd>
+    <?php echo ($this->objEvent->event_address) ? $this->objEvent->event_address . ',' : ''; ?>
+    <?php echo ($this->objEvent->event_city && isset($this->arrCities[$this->objEvent->event_city])) ? $this->arrCities[$this->objEvent->event_city] : ''; ?>
+    <?php echo ($this->objEvent->event_zip) ? $this->objEvent->event_zip : ''; ?>
+  </dd>
+</dl>
+
+*/ ?>
+
+<form id="register" method="post">
+
+  <fieldset>
+
+    <input type="hidden" name="event_id" value="<?php echo $this->objEvent->id; ?>" />
+    <input type="hidden" name="user_id" value="<?php echo $this->objAuth->getIdentity()->id; ?>" />
+
+    <div class="row search">
+      <div class="col-sm-7 field"><input type="number" name="participants" placeholder="How many people are in your group? (Enter 1 if you are the only participant)" required /></div>
+      <div class="col-sm-5 button"><input type="submit" value="Register" class="btn btn-primary" /></div>
+    </div>
+
+    <ul>
+      <li><label class="tight-mobile"><input type="checkbox" name="confirm" value="1" required /> Are you sure that you want to register for this event?</label></li>
+    </ul>
+
+  </fieldset>
+
+</form>

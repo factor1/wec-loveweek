@@ -1,0 +1,138 @@
+
+<h1><a href="/admin/events">Events</a> - <?php echo ($this->intId != 0) ? $this->objEvent->event_title : 'New'; ?></h1>
+
+<p>To <?php echo ($this->intId != 0) ? 'update this' : 'create a new'; ?> event, make changes to the form below and submit.</p>
+
+<form id="manage-event" method="post" class="manage">
+
+  <input type="hidden" name="id" value="<?php echo $this->intId; ?>" />
+  <input type="hidden" name="referer" value="<?php echo $this->escape($this->strReferer); ?>" />
+
+  <div class="row">
+
+    <fieldset class="col-sm-4">
+      <legend>General</legend>
+      <ul>
+        <li><input type="text" name="event_title" value="<?php echo $this->objEvent->event_title; ?>" placeholder="Title" required /></li>
+        <li><input type="text" name="event_organization" value="<?php echo $this->objEvent->event_organization; ?>" placeholder="Organization" /></li>
+        <li>
+          <select name="event_category" required>
+            <option <?php echo ($this->objEvent->event_category == '') ? 'selected' : ''; ?>>-- Category --</option>
+        <?php foreach ($this->arrCats as $key => $value): ?>
+            <option <?php echo ($this->objEvent->event_category == $key) ? 'selected' : ''; ?> value="<?php echo $key; ?>"><?php echo $value; ?></option>
+        <?php endforeach; ?>
+          </select>
+        </li>
+<?php if ($this->intId != 0): ?>
+        <li class="cf double">
+          <div class="row">
+            <div class="col-sm-6"><input type="number" name="event_spots_available" value="<?php echo $this->objEvent->event_spots_available; ?>" placeholder="Spots available" /></div>
+            <div class="col-sm-6"><input type="number" name="event_spots_total" value="<?php echo $this->objEvent->event_spots_total; ?>" placeholder="Total spots" required /></div>
+          </div>
+        </li>
+<?php else: ?>
+        <li><input type="number" name="event_spots_total" value="<?php echo $this->objEvent->event_spots_total; ?>" placeholder="Total spots available" required /></li>
+<?php endif; ?>
+        <li>
+          <select name="event_age" required>
+            <option <?php echo ($this->objEvent->event_age == '') ? 'selected' : ''; ?>>-- Appropriate Age --</option>
+        <?php foreach ($this->arrAges as $key => $value): ?>
+            <option <?php echo ($this->objEvent->event_age == $key) ? 'selected' : ''; ?> value="<?php echo $key; ?>"><?php echo $value; ?></option>
+        <?php endforeach; ?>
+          </select>
+        </li>
+        <li><input type="text" name="event_caution" value="<?php echo $this->objEvent->event_caution; ?>" placeholder="Caution note" maxlength="255" /></li>
+      </ul>
+    </fieldset>
+
+    <fieldset class="col-sm-4 mobile-spacing">
+      <legend>Time &amp; Place / Registration</legend>
+      <ul>
+        <li>
+          <select name="event_city" required>
+        <?php foreach ($this->arrCities as $key => $value): ?>
+            <option <?php echo ($this->objEvent->event_city == $key) ? 'selected' : ''; ?> value="<?php echo $key; ?>"><?php echo $value; ?></option>
+        <?php endforeach; ?>
+          </select>
+        </li>
+        <li class="cf double">
+          <div class="row">
+            <div class="col-sm-6"><input type="text" name="event_address" value="<?php echo $this->objEvent->event_address; ?>" placeholder="Address" /></div>
+            <div class="col-sm-6"><input type="text" name="event_zip" value="<?php echo $this->objEvent->event_zip; ?>" placeholder="Zip code" /></div>
+          </div>
+        </li>
+        <li class="cf double">
+          <div class="row">
+            <div class="col-sm-6"><input type="text" name="event_start_date" value="<?php echo ($this->objEvent->event_start_date) ? date('Y-m-d', strtotime($this->objEvent->event_start_date)) : ''; ?>" placeholder="Start date" class="date" required /></div>
+            <div class="col-sm-6"><input type="text" name="event_end_date" value="<?php echo ($this->objEvent->event_end_date) ? date('Y-m-d', strtotime($this->objEvent->event_end_date)) : ''; ?>" placeholder="End date" class="date" required /></div>
+          </div>
+        </li>
+        <li class="cf double">
+          <div class="row">
+            <div class="col-sm-6"><input type="text" name="event_start_time" value="<?php echo ($this->objEvent->event_start_time) ? date('h:ia', strtotime($this->objEvent->event_start_time)) : ''; ?>" placeholder="Start time" class="time" required /></div>
+            <div class="col-sm-6"><input type="text" name="event_end_time" value="<?php echo ($this->objEvent->event_end_time) ? date('h:ia', strtotime($this->objEvent->event_end_time)) : ''; ?>" placeholder="End time" class="time" required /></div>
+          </div>
+        </li>
+        <li><input type="text" name="event_register_link" value="<?php echo $this->objEvent->event_register_link; ?>" placeholder="Offsite registration link" /></li>
+        <li><label><input type="checkbox" name="event_no_register" value="1" <?php echo ($this->objEvent->event_no_register) ? 'checked' : ''; ?> /> No registration needed?</label></li>
+      </ul>
+    </fieldset>
+
+    <fieldset class="col-sm-4 mobile-spacing">
+      <legend>Notes</legend>
+      <ul>
+        <li><textarea name="event_notes" placeholder="Is there anything else people need to know?" style="height: 234px"><?php echo $this->objEvent->event_notes; ?></textarea></li>
+      </ul>
+    </fieldset>
+
+  </div>
+
+  <div class="row" style="padding-top: 20px">
+
+    <!-- Second Row -->
+
+    <fieldset class="col-sm-6">
+<?php if (!empty($this->objUsers)): ?>
+      <legend>Registrees <a href="#" id="copy-emails" class="note">(Copy Emails)</a></legend>
+      <ul class="list-group">
+      <?php foreach($this->objUsers as $objUser): ?>
+        <li class="list-group-item">
+          <span class="badge"><?php echo $objUser->participants; ?></span>
+          <?php echo $objUser->user_first_name . ' ' . $objUser->user_last_name; ?>,
+          <a href="mailto:<?php echo $objUser->username; ?>"><?php echo $objUser->username; ?></a>,
+          <a href="/events/unregister?event_id=<?php echo $this->objEvent->id; ?>&user_id=<?php echo $objUser->id; ?>&admin=1" class="del">[x]</a>          
+        </li>
+      <?php endforeach; ?>
+      </ul>
+<?php else: ?>
+      <legend>Registrees</legend>
+      <p>There are no registrees at this time.</p>
+<?php endif; ?>
+    </fieldset>
+
+    <fieldset class="col-sm-6 mobile-spacing">
+      <legend>Email Body</legend>
+      <ul>
+        <li><textarea name="event_email" placeholder="Message body for confirmation email sent to registrees." style="height: 194px"><?php echo $this->objEvent->event_email; ?></textarea></li>
+        <li><input type="submit" value="<?php echo ($this->intId != 0) ? 'Update' : 'Create'; ?> Event" class="btn btn-primary" /></li>
+      </ul>
+    </fieldset>
+
+  </div>
+
+</form>
+
+
+<?php $this->headScript()->captureStart() ?>
+
+jQuery(document).ready(function($) {
+
+  $('a#copy-emails').click(function(e) {
+    e.preventDefault();
+    strEmails = '<?php foreach ($this->objUsers as $objUser) { echo $objUser->username . ', '; } ?>';
+    prompt('Ctl+C to Copy to Clipboard:', strEmails);
+  });
+  
+});
+
+<?php $this->headScript()->captureEnd() ?>

@@ -1,0 +1,115 @@
+
+<h1>Sign Up</h1>
+
+<p>Sign up to register for Love Week events. All fields are required. <a href="/login">Already a user?</a></p>
+<p><em>This database is not connected to your regular WEC login. Please create a new login.</em></p>
+
+<form id="register" method="post" class="generic">
+
+  <div class="row">
+
+    <fieldset class="col-sm-6">
+      <legend>General</legend>
+      <ul>
+        <li><input type="text" name="user_first_name" value="<?php echo $this->arrData['user_first_name']; ?>" placeholder="First name" required /></li>
+        <li><input type="text" name="user_last_name" value="<?php echo $this->arrData['user_last_name']; ?>" placeholder="Last name" required /></li>
+        <li class="cf double">
+          <div class="row">
+            <div class="col-sm-6"><input id="u1" type="email" name="username" value="<?php echo $this->arrData['username']; ?>" placeholder="Email address" required /></div>
+            <div class="col-sm-6"><input id="u2" type="email" name="username_conf" value="" placeholder="Confirm email address" class="unmatch" required /></div>
+          </div>
+        </li>
+        <li class="cf double">
+          <div class="row">
+            <div class="col-sm-6"><input id="p1" type="password" name="password" placeholder="Password" required /></div>
+            <div class="col-sm-6"><input id="p2" type="password" name="password_conf" placeholder="Confirm password" class="unmatch" required /></div>
+          </div>
+        </li>
+      </ul>
+    </fieldset>
+
+    <fieldset class="col-sm-6">
+      <legend>Contact Info</legend>
+      <ul>
+        <li><input type="text" name="user_phone" value="<?php echo $this->arrData['user_phone']; ?>" placeholder="Phone number" required /></li>
+        <li><input type="text" name="user_address" value="<?php echo $this->arrData['user_address']; ?>" placeholder="Address" required /></li>
+        <li class="cf double">
+          <div class="row">
+            <div class="col-sm-4"><input type="text" name="user_city" value="<?php echo $this->arrData['user_city']; ?>" placeholder="City" required /></div>
+            <div class="col-sm-4">
+              <select name="user_state" required>
+                <option value="">-- State --</option>
+          <?php foreach ($this->arrStates as $key => $value): ?>
+                <option value="<?php echo $key; ?>" <?php echo ($key == 'VA') ? 'selected' : ''; ?>><?php echo $value; ?></option>
+          <?php endforeach; ?>
+              </select>
+            </div>
+            <div class="col-sm-4"><input type="text" name="user_zip" value="<?php echo $this->arrData['user_zip']; ?>" placeholder="Zip code" required /></div>
+          </div>
+        </li>
+        <li><input type="submit" value="Sign Up" class="btn btn-primary" /></li>
+      </ul>
+    </fieldset>
+    
+    
+
+  </div>
+
+</form>
+
+
+<?php $this->headScript()->captureStart() ?>
+
+jQuery(document).ready(function($) {
+
+  /**
+   * Prevent Submit if Email or Passwords not equal
+   */
+
+  $('form#register').submit(function(e) {
+
+    strU1 = $('input#u1').val();
+    strU2 = $('input#u2').val();
+    strP1 = $('input#p1').val();
+    strP2 = $('input#p2').val();
+
+    if (strU1 != strU2) {
+      alert('Your email addresses do not match.');
+      $('input#u1').focus();
+      $('input#u2').val('');
+      e.preventDefault();
+    } else if (strP1 != strP2) {
+      alert('Your passwords do not match.');
+      $('input#p1').focus();
+      $('input#p2').val('');
+      e.preventDefault();
+    }
+  });
+
+  /**
+   * Smart Match
+   */
+
+  $('input#u2').keyup(function(e) {
+    strU1 = $('input#u1').val();
+    strU2 = $(this).val();
+    if (strU1 == strU2) {
+      $(this).attr('class', 'match');
+    } else {
+      $(this).attr('class', 'unmatch');
+    }
+  });
+
+  $('input#p2').keyup(function(e) {
+    strP1 = $('input#p1').val();
+    strP2 = $(this).val();
+    if (strP1 == strP2) {
+      $(this).attr('class', 'match');
+    } else {
+      $(this).attr('class', 'unmatch');      
+    }
+  });
+
+});
+
+<?php $this->headScript()->captureEnd() ?>

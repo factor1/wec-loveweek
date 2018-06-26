@@ -10,7 +10,7 @@ A custom Zend Application for tracking volunteer positions and users for LoveWee
 
 The **production** repository can be found at:
 ```
-ssh://watersed@watersedgechurch.net/home/watersed/repos/loveweek.git
+ssh://watersed@209.59.138.44:2222/home/watersed/repos/loveweek.git
 ```
 
 ## Contact

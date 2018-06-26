@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <?php echo $this->headTitle(); ?>
+    <meta name="description" content="<?php echo ($this->strMetaDesc) ? $this->strMetaDesc : ''; ?>">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/js/lib/timepicker/jquery.timepicker.css">
+    <link rel="stylesheet" href="/js/lib/datepicker/jquery-ui-1.10.4.datepicker.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+    <link rel="stylesheet" href="/css/global.css">
+    <?php echo $this->headLink(); // include page-specific CSS ?>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+    <!--[if lt IE 9]>
+    <script src="/loveweek//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Google Analytics -->
+    <script>(function(e,t,n,r,i,s,o){e["GoogleAnalyticsObject"]=i;e[i]=e[i]||function(){(e[i].q=e[i].q||[]).push(arguments)},e[i].l=1*new Date;s=t.createElement(n),o=t.getElementsByTagName(n)[0];s.async=1;s.src=r;o.parentNode.insertBefore(s,o)})(window,document,"script","//www.google-analytics.com/analytics.js","ga");ga("create","UA-147568-63","watersedgechurch.net");ga("send","pageview")</script>
+  </head>
+
+  <body>
+
+    <div id="page-wrap">
+
+      <?php echo $this->flashMessenger(); ?>
+
+      <header id="header">
+
+<?php if ($this->boolIsAdmin): ?>
+
+        <nav class="navbar navbar-default" role="navigation">
+
+          <div class="container">
+
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="http://wecloveweek.com">Love Weekend</a>
+            </div>
+
+            <div class="collapse navbar-collapse">
+
+              <ul class="nav navbar-nav">
+                <li class="<?php echo ($this->strAdminPrimary == 'Events') ? 'active' : ''; ?>"><a href="/admin/events">Events</a></li>
+                <li class="<?php echo ($this->strAdminPrimary == 'Users') ? 'active' : ''; ?>"><a href="/admin/users">Users</a></li>
+                <li><a href="/logout">Logout</a></li>
+              </ul>
+
+            </div>
+          </div>
+        </nav>
+
+<?php endif; ?>
+
+<?php if (!$this->boolAdmin): ?>
+
+        <div class="header container">
+          <a href="/" class="logo"><img src="/images/logo.png" alt="Love Week" /></a>
+          <div class="countdown">
+            <div class="intro">
+              <span class="top line">Countdown to Kickoff</span>
+              <span class="bottom line">of Love Week</span>
+            </div>
+            <ul class="cf">
+              <li class="days">
+                <span class="val"><?php /*echo date('d', $this->timeDif); */ echo $this->timeDifDays; ?></span>
+                <span class="key">Days</span>
+              </li>
+              <li class="hours">
+                <span class="val"><?php echo date('H', $this->timeDif); ?></span>
+                <span class="key">Hours</span>
+              </li>
+              <li class="minutes">
+                <span class="val"><?php echo date('i', $this->timeDif); ?></span>
+                <span class="key">Minutes</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+<?php endif; ?>
+
+      </header>
+
+      <?php echo ($this->boolHome) ? '<img src="/images/banner-home.jpg" alt="Love Week" class="banner" />' : ''; ?>
+
+<?php if (!$this->boolNoContainer): ?>
+
+      <div class="content container">
+        <?php echo $this->layout()->content; ?>
+      </div>
+
+<?php else: ?>
+
+      <div class="content">
+        <?php echo $this->layout()->content; ?>
+      </div>
+
+<?php endif; ?>
+
+    </div> <!-- #page-wrap -->
+
+    <footer id="footer">
+
+      <div class="container">
+        <ul>
+          <li>
+            <a href="/" class="arrow">Return to Waters Edge Church</a> &nbsp; | &nbsp;
+            <a href="/events">Find Events</a> &nbsp; | &nbsp;
+            <a href="/contact">Contact Us</a>
+<?php if ($this->boolIsUser): ?> &nbsp; | &nbsp;
+            <a href="/events/me">My Events</a> &nbsp; | &nbsp;
+            <a href="/admin/users/manage/id/<?php echo $this->objAuth->getIdentity()->id; ?>">My Account</a> &nbsp; | &nbsp;
+            <a href="/logout">Logout</a>
+<?php endif; ?>
+          </li>
+          <li>Site by <a href="http://factor1studios.com">Factor1</a></li>
+        </ul>
+      </div>
+
+    </footer>
+
+  </body>
+
+  <script src="/js/lib/jquery.tablesorter.min.js"></script>
+  <script src="/js/lib/timepicker/jquery.timepicker.min.js"></script>
+  <script src="/js/lib/datepicker/jquery-ui-1.10.4.datepicker.js"></script>
+  <script src="/js/global.js"></script>
+  <?php echo $this->headScript(); // include page-specific JS ?>
+
+</html>
