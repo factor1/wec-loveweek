@@ -12,7 +12,7 @@ class ControllerAbstract extends Zend_Controller_Action
          * Countdown
          */
 
-        $timeEnd = mktime(20, 0, 0, 7, 29, 2017);
+        $timeEnd = mktime(8, 0, 0, 8, 6, 2018);
                 // $timeEnd = mktime(24h, min, sec, M, D, Y);
         $timeNow = time();
         $this->view->timeDif = $timeEnd - $timeNow;

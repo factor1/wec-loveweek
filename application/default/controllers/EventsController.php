@@ -273,7 +273,10 @@ class EventsController extends ControllerAbstract
                         // More Info
                         $config = $this->config->appSettings;
                         $strBodyText .= "\nEvent Info: ".$config->url->base."/events/view/id/" . $objEvent->id;
-                        $strBodyHTML .= '<br /><a href="'.$config->url->base.'/events/view/id/' . $objEvent->id . '">View Event Info</a>';
+                        $strBodyHTML .= '<br /><a href="'.$config->url->base.'/events/view/id/' . $objEvent->id . '">View Event Info</a>. <br /><br />If you are no longer able to volunteer for this project, please remove your registration by logging into the Love Week database, selecting <strong>My Events</strong> at the bottom of the website, and deleting the project that you are no longer able to attend.';
+                        
+                        
+                        
 
                         // Salutations
 
@@ -287,7 +290,7 @@ class EventsController extends ControllerAbstract
                         $objMail->setBodyHtml(utf8_decode($strBodyHTML));
                         $objMail->addTo($config->From->email,$config->From->name);
                         $objMail->addTo($objUser->username);
-                        $objMail->setSubject('Thank you for registering for ' . $objEvent->event_title);
+                        $objMail->setSubject('WEC Love Week: ' . $objEvent->event_title);
 
                         if ($objMail->send()) {
                             $this->_helper->FlashMessenger(array('info' => 'Confirmation email sent to ' . $objUser->username . '.'));
