@@ -232,13 +232,17 @@ class EventsController extends ControllerAbstract
                         $strBodyHTML = "Dear " . $objUser->user_first_name . ",<br /><br />";
 
                         // Message body
-
+                        
+                        $strBodyText .= "Thank you for registering for " . $objEvent->event_title . ".";
+                        $strBodyHTML .= 'Thank you for registering for ' . $objEvent->event_title . '.';
+						
+						
+						// Event specific message copy
                         if (!empty($objEvent->event_email)) {
                             $strBodyText .= $objEvent->event_email;
                             $strBodyHTML .= nl2br($objEvent->event_email);
                         } else {
-                            $strBodyText .= "Thank you for registering for " . $objEvent->event_title . ".";
-                            $strBodyHTML .= 'Thank you for registering for ' . $objEvent->event_title . '.';
+                            
                         }
 
                         // When
@@ -273,7 +277,7 @@ class EventsController extends ControllerAbstract
                         // More Info
                         $config = $this->config->appSettings;
                         $strBodyText .= "\nEvent Info: ".$config->url->base."/events/view/id/" . $objEvent->id;
-                        $strBodyHTML .= '<br /><a href="'.$config->url->base.'/events/view/id/' . $objEvent->id . '">View Event Info</a>. <br /><br />If you are no longer able to volunteer for this project, please remove your registration by logging into the Love Week database, selecting <strong>My Events</strong> at the bottom of the website, and deleting the project that you are no longer able to attend.';
+                        $strBodyHTML .= '<br /><a href="'.$config->url->base.'/events/view/id/' . $objEvent->id . '">View Event Info</a>. <br /><br />If you are no longer able to volunteer for this project, please remove your registration by logging into the Love Week database, selecting <strong><a href="http://wecloveweek.com/events/me">My Events</a></strong> at the bottom of the website, and deleting the project that you are no longer able to attend.';
                         
                         
                         
