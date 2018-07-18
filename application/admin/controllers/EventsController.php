@@ -20,7 +20,7 @@ class Admin_EventsController extends Admin_ControllerAbstract
             'hampton'      => 'Hampton',
             'newport-news' => 'Newport News',
             'matthews'     => 'Mathews',
-            //'virginia-beach' => 'Virginia Beach',
+            'portsmouth' => 'Portsmouth',
             'poquoson'     => 'Poquoson',
             'seaford'     => 'Seaford',
             'toano'        => 'Toano',

@@ -22,7 +22,7 @@ class EventsController extends ControllerAbstract
             'newport-news' => 'Newport News',
             'toano'        => 'Toano',
             'matthews'		=> 'Mathews',
-            //'virginia-beach' => 'Virginia Beach',
+            'portsmouth' => 'Portsmouth',
             'williamsburg' => 'Williamsburg',
             'yorktown'     => 'Yorktown',
             'poquoson'     => 'Poquoson',
