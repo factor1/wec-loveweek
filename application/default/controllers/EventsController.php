@@ -230,21 +230,11 @@ class EventsController extends ControllerAbstract
 
                         $strBodyText = "Dear " . $objUser->user_first_name . ",\n\n";
                         $strBodyHTML = "Dear " . $objUser->user_first_name . ",<br /><br />";
-
-                        // Message body
                         
                         $strBodyText .= "Thank you for registering for " . $objEvent->event_title . ".";
                         $strBodyHTML .= 'Thank you for registering for ' . $objEvent->event_title . '.';
-						
-						
-						// Event specific message copy
-                        if (!empty($objEvent->event_email)) {
-                            $strBodyText .= $objEvent->event_email;
-                            $strBodyHTML .= nl2br($objEvent->event_email);
-                        } else {
-                            
-                        }
 
+                       
                         // When
 
                         if ($objEvent->event_start_date != $objEvent->event_end_date) {
@@ -271,13 +261,23 @@ class EventsController extends ControllerAbstract
 
                         if (!empty($objEvent->event_organization)) {
                             $strBodyText .= "\nOrganization: " . $objEvent->event_organization;
-                            $strBodyHTML .= "<br />Organization: " . $objEvent->event_organization;
+                            $strBodyHTML .= "<br />Organization: " . $objEvent->event_organization . "<br />";
                         }
+                        
+                         // Message body
+
+                        if (!empty($objEvent->event_email)) {
+                            $strBodyText .= $objEvent->event_email;
+                            $strBodyHTML .= nl2br($objEvent->event_email);
+                        } else {
+                        
+                        }
+
 
                         // More Info
                         $config = $this->config->appSettings;
                         $strBodyText .= "\nEvent Info: ".$config->url->base."/events/view/id/" . $objEvent->id;
-                        $strBodyHTML .= '<br /><a href="'.$config->url->base.'/events/view/id/' . $objEvent->id . '">View Event Info</a>. <br /><br />If you are no longer able to volunteer for this project, please remove your registration by logging into the Love Week database, selecting <strong><a href="http://wecloveweek.com/events/me">My Events</a></strong> at the bottom of the website, and deleting the project that you are no longer able to attend.';
+                        $strBodyHTML .= '<br /><a href="'.$config->url->base.'/events/view/id/' . $objEvent->id . '">View Event Info</a>. <br /><br />If you are no longer able to volunteer for this project, please remove your registration by logging into the Love Week database, selecting <strong>My Events</strong> at the bottom of the website, and deleting the project that you are no longer able to attend.';
                         
                         
                         
