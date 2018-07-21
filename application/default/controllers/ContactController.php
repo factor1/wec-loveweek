@@ -40,7 +40,7 @@ class ContactController extends ControllerAbstract
                 $config = $this->config->resources->mail->contactForm;
                 $objMail = new Zend_Mail();
                 $objMail->setBodyText($strBodyText);
-                $objMail->setBodyHtml(stripslashes(nl2br($strBodyText)));
+                $objMail->setBodyHtml(stripslashes(nl2br(utf8_decode($strBodyText))));
                 $objMail->setFrom($arrData['email_address'], $arrData['first_name'] . ' ' . $arrData['last_name']);
                 $objMail->addTo($config->To->email,$config->To->name);
                 $objMail->setSubject('Love Week Contact Submission');

@@ -29,9 +29,9 @@ class LoginController extends ControllerAbstract
             $strPassword = trim($this->getRequest()->getPost('password'));
             $blnRemember = (int) $this->getRequest()->getPost('remember', 0);
             $intAttempts = (int) $this->getRequest()->getPost('attempts', 0);
+            $userExists  = Users::isActiveUser($strUsername);
 
             // assign view variables
-
             $this->view->strUsername = $strUsername;
             $this->view->intAttempts = $intAttempts + 1;
 
@@ -57,7 +57,11 @@ class LoginController extends ControllerAbstract
                     $this->_redirect('/');
 
                 } else if ($intResult == -3) {
-                    $this->_helper->FlashMessenger(array('danger' => 'Your account is not active yet. A confirmation email with an activation link has been sent.'));
+                    if ($userExists) {
+                        $this->_helper->FlashMessenger(array('danger' => 'Sorry, those credentials were not valid. Try again or reset your password.'));
+                    } else {
+                        $this->_helper->FlashMessenger(array('danger' => 'Your account is not active yet. A confirmation email with an activation link has been sent.'));
+                    }
                 } else {
                     $this->_helper->FlashMessenger(array('danger' => 'Login failed. Please try again.'));
                 }
@@ -103,8 +107,8 @@ class LoginController extends ControllerAbstract
 
                 $config = $this->config->resources->mail->userRegister;
                 $objMail = new Zend_Mail();
-                $objMail->setBodyText($strBodyText);
-                $objMail->setBodyHtml($strBodyText);
+                $objMail->setBodyText(utf8_decode($strBodyText));
+                $objMail->setBodyHtml(utf8_decode($strBodyText));
                 $objMail->addTo($config->From->email,$config->From->name);
                 $objMail->addTo($strEmail);
                 $objMail->setSubject('Love Week - Password Assistance');
@@ -209,7 +213,7 @@ class LoginController extends ControllerAbstract
 
                 $config = $this->config->resources->mail->userRegister;
                 $objMail = new Zend_Mail();
-                $objMail->setBodyText($strMessage);
+                $objMail->setBodyTextutf8_decode(($strMessage));
                 $objMail->addTo($config->From->email,$config->From->name);
                 $objMail->addTo($strEmail);
                 $objMail->setSubject('Love Week Account Activation');

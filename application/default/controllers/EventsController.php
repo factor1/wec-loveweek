@@ -22,7 +22,7 @@ class EventsController extends ControllerAbstract
             'newport-news' => 'Newport News',
             'toano'        => 'Toano',
             'matthews'		=> 'Mathews',
-            //'virginia-beach' => 'Virginia Beach',
+            'portsmouth' => 'Portsmouth',
             'williamsburg' => 'Williamsburg',
             'yorktown'     => 'Yorktown',
             'poquoson'     => 'Poquoson',
@@ -230,17 +230,11 @@ class EventsController extends ControllerAbstract
 
                         $strBodyText = "Dear " . $objUser->user_first_name . ",\n\n";
                         $strBodyHTML = "Dear " . $objUser->user_first_name . ",<br /><br />";
+                        
+                        $strBodyText .= "Thank you for registering for " . $objEvent->event_title . ".";
+                        $strBodyHTML .= 'Thank you for registering for ' . $objEvent->event_title . '.';
 
-                        // Message body
-
-                        if (!empty($objEvent->event_email)) {
-                            $strBodyText .= $objEvent->event_email;
-                            $strBodyHTML .= nl2br($objEvent->event_email);
-                        } else {
-                            $strBodyText .= "Thank you for registering for " . $objEvent->event_title . ".";
-                            $strBodyHTML .= 'Thank you for registering for ' . $objEvent->event_title . '.';
-                        }
-
+                       
                         // When
 
                         if ($objEvent->event_start_date != $objEvent->event_end_date) {
@@ -267,13 +261,26 @@ class EventsController extends ControllerAbstract
 
                         if (!empty($objEvent->event_organization)) {
                             $strBodyText .= "\nOrganization: " . $objEvent->event_organization;
-                            $strBodyHTML .= "<br />Organization: " . $objEvent->event_organization;
+                            $strBodyHTML .= "<br />Organization: " . $objEvent->event_organization . "<br />";
                         }
+                        
+                         // Message body
+
+                        if (!empty($objEvent->event_email)) {
+                            $strBodyText .= $objEvent->event_email;
+                            $strBodyHTML .= nl2br($objEvent->event_email);
+                        } else {
+                        
+                        }
+
 
                         // More Info
                         $config = $this->config->appSettings;
                         $strBodyText .= "\nEvent Info: ".$config->url->base."/events/view/id/" . $objEvent->id;
-                        $strBodyHTML .= '<br /><a href="'.$config->url->base.'/events/view/id/' . $objEvent->id . '">View Event Info</a>';
+                        $strBodyHTML .= '<br /><a href="'.$config->url->base.'/events/view/id/' . $objEvent->id . '">View Event Info</a>. <br /><br />If you are no longer able to volunteer for this project, please remove your registration by logging into the Love Week database, selecting <strong>My Events</strong> at the bottom of the website, and deleting the project that you are no longer able to attend.';
+                        
+                        
+                        
 
                         // Salutations
 
@@ -283,11 +290,11 @@ class EventsController extends ControllerAbstract
                         // Send Mail
                         $config = $this->config->resources->mail->eventRegister;
                         $objMail = new Zend_Mail();
-                        $objMail->setBodyText($strBodyText);
-                        $objMail->setBodyHtml($strBodyHTML);
+                        $objMail->setBodyText(utf8_decode($strBodyText));
+                        $objMail->setBodyHtml(utf8_decode($strBodyHTML));
                         $objMail->addTo($config->From->email,$config->From->name);
                         $objMail->addTo($objUser->username);
-                        $objMail->setSubject('Thank you for registering for ' . $objEvent->event_title);
+                        $objMail->setSubject('WEC Love Week: ' . $objEvent->event_title);
 
                         if ($objMail->send()) {
                             $this->_helper->FlashMessenger(array('info' => 'Confirmation email sent to ' . $objUser->username . '.'));
